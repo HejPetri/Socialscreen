@@ -33,10 +33,6 @@ install:
 
 	sudo cp ./splash/sg_logo.png /opt/sg_kiosk/sg_logo.png
 
-	rm -rf ~/Socialscreen
-	git clone https://github.com/HejPetri/Socialscreen ~/Socialscreen
-	rm -rf ~/Socialgrab-Kioskmode
-
 upgrade:
 	git reset --hard HEAD
 	git clean -f -d
