@@ -42,3 +42,4 @@ upgrade:
 	git clean -f -d
 	git pull origin master
 	make install
+	sudo reboot
