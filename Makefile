@@ -38,7 +38,7 @@ install:
 	rm -rf ~/Socialgrab-Kioskmode
 
 upgrade:
-	rm -rf ~/Socialscreen
-	git clone https://github.com/HejPetri/Socialscreen ~/Socialscreen
-	cd ~/Socialscreen
+	git reset --hard HEAD
+	git clean -f -d
+	git pull origin master
 	make install
