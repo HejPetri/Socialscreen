@@ -10,15 +10,11 @@ install:
 	curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 	sudo apt-get install -y nodejs
 
-	sudo apt-get -y install openvpn
-	sudo install -o root -m 400 socialgrab.ovpn /etc/openvpn/socialgrab.conf
-	echo AUTOSTART=all | sudo tee -a /etc/default/openvpn
-	sudo /etc/init.d/openvpn restart
-
 	sudo chmod +x ./kiosk/kiosk.sh
 	sudo chmod +x ./updater/updater.sh
 	sudo chmod +x ./scripts/generate_key.sh
 
+	sudo mkdir -p /opt/sg_kiosk/
 	sudo mkdir -p /opt/sg_kiosk/data/
 
 	sudo cp ./socialgrab /etc/sudoers.d/
@@ -37,5 +33,12 @@ install:
 
 	sudo cp ./splash/sg_logo.png /opt/sg_kiosk/sg_logo.png
 
+	rm -rf ~/Socialscreen
+	git clone https://github.com/HejPetri/Socialscreen ~/Socialscreen
+	rm -rf ~/Socialgrab-Kioskmode
 
 upgrade:
+	rm -rf ~/Socialscreen
+	git clone https://github.com/HejPetri/Socialscreen ~/Socialscreen
+	cd ~/Socialscreen
+	make install

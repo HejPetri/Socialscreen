@@ -23,13 +23,44 @@ function check_status(){
   echo $status
 }
 
+function geo_location(){
+  sudo bash -c 'curl "https://maps.googleapis.com/maps/api/browserlocation/json?browser=firefox&sensor=true&" --data-urlencode "`nmcli -f SSID,BSSID,SIGNAL dev wifi list |perl -ne "if(s/^(.+?)\s+(..:..:..:..:..:..)\s+(.+?)\s*$/&wifi=mac:\2|ssid:\1|ss:\3&/g){print;}"`" > /opt/sg_kiosk/data/geo_location'
+}
+
+function get_lat(){
+  geo=`cat /opt/sg_kiosk/data/geo_location`
+  lat=$(node -pe 'JSON.parse(process.argv[1]).location.lat' "$geo")
+  echo $lat
+}
+
+function get_lng(){
+  geo=`cat /opt/sg_kiosk/data/geo_location`
+  lng=$(node -pe 'JSON.parse(process.argv[1]).location.lng' "$geo")
+  echo $lng
+}
+
 function upgrade(){
-  cd '~/Socialgrab-Kioskmode'
+  cd ~/Socialscreen
   make upgrade
 }
 
-function geolocation(){ 
-  curl "https://maps.googleapis.com/maps/api/browserlocation/json?browser=firefox&sensor=true&" --data-urlencode "`nmcli -f SSID,BSSID,SIGNAL dev wifi list |perl -ne "if(s/^(.+?)\s+(..:..:..:..:..:..)\s+(.+?)\s*$/&wifi=mac:\2|ssid:\1|ss:\3&/g){print;}"`" > /opt/sg_kiosk/data/geolocation 
+function get_data(){
+  TX_BYTES=$(ifconfig | grep 'bytes' | cut -d ':' -f 2 | cut -d ' ' -f 1)
+  RX_BYTES=$(ifconfig | grep 'bytes' | cut -d ':' -f 3 | cut -d ' ' -f 1)
+  
+  tot=0
+
+  array=( $(echo ${TX_BYTES//[a-z]/}) )
+  for i in ${array[@]}; do
+    let tot+=$i
+  done
+
+  array=( $(echo ${RX_BYTES//[a-z]/}) )
+  for i in ${array[@]}; do
+    let tot+=$i
+  done
+
+  echo $tot
 }
 
 sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
@@ -45,7 +76,7 @@ while true; do
   sleep 3
 done
 
-geolocation
+geo_location
 
 while true; do
   key=`cat /opt/sg_kiosk/data/key`
@@ -66,6 +97,11 @@ while true; do
 
   vpn_ip=$(ifconfig tun0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 
+  data=$(get_data)
+
+  lat=$(get_lat)
+  lng=$(get_lng)
+
   json='{
       "status":"'"$status"'", 
       "key":"'"$key"'", 
@@ -76,7 +112,10 @@ while true; do
       "last_refresh":"'"$last_refresh"'",
       "last_alive":"'"$last_alive"'",
       "version":"'"$version"'",
-      "vpn_ip":"'"$vpn_ip"'"
+      "vpn_ip":"'"$vpn_ip"'",
+      "data":"'"$data"'",
+      "lat":"'"$lat"'",
+      "lng":"'"$lng"'"
     }'
 
   res=$(curl -s \
