@@ -8,19 +8,39 @@ function refresh_browser(){
   sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
 }
 
+sys_status=0
 function check_status(){
+  case $sys_status in
+    1)
+    echo "STATUS_REBOOT"
+    exit 0
+    ;;
+
+    2)
+    echo "STATUS_SHUTDOWN"
+    exit 0
+    ;;
+
+    3)
+    echo "STATUS_UPGRADING"
+    exit 0
+    ;;
+  esac
+
   ps cax | grep chrome > /dev/null
   if [ $? -eq 0 ]; then
-    status="STATUS_OK"
-  else
-    ps cax | grep eog > /dev/null
-    if [ $? -eq 0 ]; then
-      status="STATUS_BOOTING"
-    else
-      status="STATUS_FAILED"
-    fi
+    echo "STATUS_OK"
+    exit 0
   fi
-  echo $status
+
+  ps cax | grep eog > /dev/null
+  if [ $? -eq 0 ]; then
+    echo "STATUS_BOOTING"
+    exit 0
+  fi
+
+  echo "STATUS_FAILED"
+  exit 0
 }
 
 function geo_location(){
@@ -131,11 +151,13 @@ while true; do
     ;;
 
     'STATUS_REBOOT')
-    sudo reboot
+    sys_status=1
+    (sleep 3; sudo reboot) &
     ;;
 
     'STATUS_SHUTDOWN')
-    sudo shutdown -h now
+    sys_status=2
+    (sleep 3; sudo shutdown -h now) &
     ;;
 
     'STATUS_RELOAD')
@@ -143,7 +165,8 @@ while true; do
     ;;
 
     'STATUS_UPGRADE')
-    upgrade
+    sys_status=3
+    (sleep 3; upgrade) &
     ;;
   esac
 
