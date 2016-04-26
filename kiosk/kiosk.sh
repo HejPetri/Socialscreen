@@ -25,5 +25,5 @@ sleep 3
 while true; do
   rm -rf ~/.cache/google-chrome/
   (sleep 5; kill -9 $(pgrep eog)) &
-  google-chrome --kiosk --no-first-run "http://46.101.117.243/router.php?key=$key"
+  google-chrome --kiosk --no-first-run --incognito "http://46.101.117.243/router.php?key=$key"
 done
