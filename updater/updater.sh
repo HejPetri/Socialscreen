@@ -12,7 +12,7 @@ sys_status=0
 function check_status(){
   case $sys_status in
     1)
-    echo "STATUS_REBOOT"
+    echo "STATUS_REBOOTING"
     exit 0
     ;;
 
@@ -85,16 +85,16 @@ function get_data(){
 
 sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
 
-sleep 10
-
 while true; do
-  ping -c 1 8.8.8.8
+  ping -c 1 www.google.com
   rc=$?
   if [ $rc -eq 0 ]; then
     break
   fi
   sleep 3
 done
+
+sleep 3
 
 geo_location
 

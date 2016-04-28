@@ -12,7 +12,7 @@ key=`cat /opt/sg_kiosk/data/key`
 (unclutter -idle 0.1 -root) &
 
 while true; do
-  ping -c 1 8.8.8.8
+  ping -c 1 www.google.com
   rc=$?
   if [ $rc -eq 0 ]; then
     break
