@@ -15,15 +15,24 @@ while true; do
   ping -c 1 www.google.com
   rc=$?
   if [ $rc -eq 0 ]; then
+    sleep 3
     break
   fi
   sleep 3
 done
 
-sleep 3
+while true; do
+  vpn_ip=$(ifconfig tun0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+  LEN=$(echo ${#vpn_ip})
+  if [ $LEN -gt 0 ]; then
+    sleep 3
+    break
+  fi
+  sleep 3
+done
 
 while true; do
   rm -rf ~/.cache/google-chrome/
-  (sleep 5; kill -9 $(pgrep eog)) &
-  google-chrome --kiosk --no-first-run --incognito "http://46.101.117.243/router.php?key=$key"
+  (sleep 3; kill -9 $(pgrep eog)) &
+  google-chrome --kiosk --no-first-run --incognito "http://screen.socialgrab.me/router.php?key=$key"
 done

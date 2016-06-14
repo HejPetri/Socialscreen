@@ -5,6 +5,7 @@ install:
 	sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 
 	sudo apt update
+	sudo apt upgrade
 	sudo apt install -y openssh-server google-chrome-stable fbi unclutter xdotool
 
 	curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
@@ -32,6 +33,10 @@ install:
 	sudo cp ./VERSION /opt/sg_kiosk/data/VERSION
 
 	sudo cp ./splash/sg_logo.png /opt/sg_kiosk/sg_logo.png
+
+	sudo cp ./grub/grub /etc/default/grub
+	sudo cp ./grub/modules /etc/modules
+	sudo update-grub
 
 upgrade:
 	git reset --hard HEAD
