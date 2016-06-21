@@ -152,7 +152,7 @@ while true; do
 
     'STATUS_REBOOT')
     sys_status=1
-    (sleep 3; sudo reboot) &
+    (sleep 3; sudo reboot -f) &
     ;;
 
     'STATUS_SHUTDOWN')
