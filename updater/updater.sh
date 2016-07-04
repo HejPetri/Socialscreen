@@ -8,6 +8,13 @@ function refresh_browser(){
   sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
 }
 
+function reboot_browser(){
+  sudo killall -v chrome
+  sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
+}
+
+audio_muted=1
+
 sys_status=0
 function check_status(){
   case $sys_status in
@@ -23,6 +30,11 @@ function check_status(){
 
     3)
     echo "STATUS_UPGRADING"
+    exit 0
+    ;;
+
+    3)
+    echo "STATUS_REBOOTING_CHROME"
     exit 0
     ;;
   esac
@@ -98,6 +110,8 @@ sleep 3
 
 geo_location
 
+sudo su -c "amixer -D pulse set Master 1+ mute" -s /bin/sh socialgrab
+
 while true; do
   key=`cat /opt/sg_kiosk/data/key`
   last_refresh=`cat /opt/sg_kiosk/data/last_refresh`
@@ -152,7 +166,7 @@ while true; do
 
     'STATUS_REBOOT')
     sys_status=1
-    (sleep 3; sudo reboot -f) &
+    (sleep 3; sudo shutdown -h -r now) &
     ;;
 
     'STATUS_SHUTDOWN')
@@ -164,6 +178,11 @@ while true; do
     refresh_browser
     ;;
 
+    'STATUS_REBOOT_CHROME')
+    sys_status=4
+    reboot_browser
+    ;;
+
     'STATUS_UPGRADE')
     sys_status=3
     (sleep 3; upgrade) &
@@ -172,11 +191,17 @@ while true; do
 
   case "$audio" in
     '0')
-    sudo su -c "amixer -D pulse set Master 1+ mute" -s /bin/sh socialgrab
+    if [ $audio_muted -eq 0 ]; then
+      sudo su -c "amixer -D pulse set Master 1+ mute" -s /bin/sh socialgrab
+      audio_muted=1
+    fi
     ;;
 
     '1')
-    sudo su -c "amixer -D pulse set Master 1+ unmute" -s /bin/sh socialgrab
+    if [ $audio_muted -eq 1 ]; then
+      sudo su -c "amixer -D pulse set Master 1+ unmute" -s /bin/sh socialgrab
+      audio_muted=0
+    fi
     ;;
   esac
 
