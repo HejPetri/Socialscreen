@@ -39,6 +39,11 @@ install:
 	sudo cp ./grub/modules /etc/modules
 	sudo update-grub
 
+	sudo rm /usr/lib/gnome-keyring/gnome-keyring-prompt
+	sudo rm /usr/lib/gnome-keyring/gnome-keyring-prompt-3
+
+	sudo rm ~/.local/share/keyrings/login.keyring
+
 upgrade:
 	git reset --hard HEAD
 	git clean -f -d
