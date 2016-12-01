@@ -5,7 +5,7 @@ install:
 	sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 
 	sudo apt update
-	sudo apt install -y openssh-server google-chrome-stable fbi unclutter xdotool
+	sudo apt install -y openssh-server google-chrome-stable fbi unclutter xdotool wmctrl
 
 	curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 	sudo apt-get install -y nodejs

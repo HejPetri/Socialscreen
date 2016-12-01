@@ -3,7 +3,14 @@
 gsettings set org.gnome.desktop.session idle-delay 0
 gsettings set org.gnome.desktop.screensaver lock-enabled false
 
+export DISPLAY=:0
+gsettings set org.gnome.Vino enabled true
+gsettings set org.gnome.Vino prompt-enabled false
+gsettings set org.gnome.Vino require-encryption false
+
 xdg-settings set default-web-browser google-chrome.desktop
+
+/usr/lib/vino/vino-server &
 
 (eog --fullscreen /opt/sg_kiosk/sg_logo.png) &
 
@@ -30,6 +37,13 @@ while true; do
   fi
   sleep 3
 done
+
+(
+  while true; do
+    wmctrl -r "chrome" -b toggle,above
+    sleep 1
+  done
+) &
 
 while true; do
   rm -rf ~/.cache/google-chrome/
