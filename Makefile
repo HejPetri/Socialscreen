@@ -43,6 +43,7 @@ install:
 	sudo rm -rf /usr/lib/gnome-keyring/gnome-keyring-prompt-3
 
 	sudo rm -rf ~/.local/share/keyrings/login.keyring
+	sudo chmod -x /usr/bin/gnome-keyring*
 
 upgrade:
 	git reset --hard HEAD

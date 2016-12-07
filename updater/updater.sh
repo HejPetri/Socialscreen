@@ -73,7 +73,7 @@ function get_lng(){
 
 function upgrade(){
   cd ~/Socialscreen
-  make upgrade
+  sudo make upgrade
 }
 
 function get_data(){
