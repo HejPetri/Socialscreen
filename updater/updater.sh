@@ -97,6 +97,29 @@ function get_data(){
 
 sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
 
+rotation=`cat /opt/sg_kiosk/data/rotation`
+case "$rotation" in
+  'left')
+    export DISPLAY=:0
+    xrandr -o left
+    ;;
+	
+  'right')
+    export DISPLAY=:0
+    xrandr -o right
+    ;;
+	
+  'normal')
+    export DISPLAY=:0
+    xrandr -o normal
+    ;;
+	
+  'inverted')
+    export DISPLAY=:0
+    xrandr -o inverted
+    ;;
+esac
+
 while true; do
   ping -c 1 www.google.com
   rc=$?
@@ -186,6 +209,30 @@ while true; do
     'STATUS_UPGRADE')
     sys_status=3
     (sleep 3; upgrade) &
+    ;;
+	
+    'ROTATE_LEFT')
+    export DISPLAY=:0
+    sudo bash -c 'echo "left" > /opt/sg_kiosk/data/rotation'
+    sudo xrandr -o left
+    ;;
+	
+    'ROTATE_RIGHT')
+    export DISPLAY=:0
+    sudo bash -c 'echo "right" > /opt/sg_kiosk/data/rotation'
+    sudo xrandr -o right
+    ;;
+	
+    'ROTATE_NORMAL')
+    export DISPLAY=:0
+    sudo bash -c 'echo "normal" > /opt/sg_kiosk/data/rotation'
+    sudo xrandr -o normal
+    ;;
+	
+    'ROTATE_INVERTED')
+    export DISPLAY=:0
+    sudo bash -c 'echo "inverted" > /opt/sg_kiosk/data/rotation'
+    sudo xrandr -o inverted
     ;;
   esac
 
