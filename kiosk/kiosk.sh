@@ -38,6 +38,29 @@ while true; do
   sleep 3
 done
 
+rotation=`cat /opt/sg_kiosk/data/rotation`
+case "$rotation" in
+  'left')
+    export DISPLAY=:0
+    xrandr -o left
+    ;;
+
+  'right')
+    export DISPLAY=:0
+    xrandr -o right
+    ;;
+
+  'normal')
+    export DISPLAY=:0
+    xrandr -o normal
+    ;;
+
+  'inverted')
+    export DISPLAY=:0
+    xrandr -o inverted
+    ;;
+esac
+
 (
   while true; do
     wmctrl -r "chrome" -b toggle,above

@@ -97,29 +97,6 @@ function get_data(){
 
 sudo bash -c 'last_refresh=$(date +%s); echo $last_refresh > /opt/sg_kiosk/data/last_refresh'
 
-rotation=`cat /opt/sg_kiosk/data/rotation`
-case "$rotation" in
-  'left')
-    export DISPLAY=:0
-    xrandr -o left
-    ;;
-	
-  'right')
-    export DISPLAY=:0
-    xrandr -o right
-    ;;
-	
-  'normal')
-    export DISPLAY=:0
-    xrandr -o normal
-    ;;
-	
-  'inverted')
-    export DISPLAY=:0
-    xrandr -o inverted
-    ;;
-esac
-
 while true; do
   ping -c 1 www.google.com
   rc=$?
